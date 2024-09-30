@@ -1,10 +1,12 @@
 const express = require('express')
 const morgan = require('morgan')
 const taskRouter = require('./routes/tark.routes')
+const cors = require('cors')
 
 const PORT = 3000
 const app=express()
 
+app.use(cors())
 app.use(morgan('dev'))
 app.use(express.json())//para que express entienda los json. 
 
