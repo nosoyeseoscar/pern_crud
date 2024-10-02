@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const URL = 'http://localhost:4000/tasks'
 
 export default function TaskForm() {
 
@@ -7,10 +10,23 @@ export default function TaskForm() {
         description: ''
     })
 
-    const handleSubmit = (event) => {
+    const navigate = useNavigate()
+
+    const handleSubmit = async (event) => {
         event.preventDefault()
-        console.log(task);
-        
+
+        try {
+            const res = await fetch(URL, {
+                method: "POST",
+                body: JSON.stringify(task),
+                headers: {'Content-Type':'application/json'}
+            })
+    
+            //const data = await res.json()
+            navigate('/')
+        } catch (error) {
+            console.log(error.message);
+        } 
     }
 
     const handleChange = (event) => {
