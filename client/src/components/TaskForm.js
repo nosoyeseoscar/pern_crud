@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Spinner from "./Spinner";
 
 const URL = 'http://localhost:4000/tasks'
 
@@ -10,10 +11,14 @@ export default function TaskForm() {
         description: ''
     })
 
+    const [loading, setLoading] = useState(false)
+
     const navigate = useNavigate()
 
     const handleSubmit = async (event) => {
         event.preventDefault()
+
+        setLoading(true)
 
         try {
             const res = await fetch(URL, {
@@ -23,6 +28,7 @@ export default function TaskForm() {
             })
     
             //const data = await res.json()
+            setLoading(false)
             navigate('/')
         } catch (error) {
             console.log(error.message);
@@ -84,9 +90,12 @@ export default function TaskForm() {
                 <div className="mt-6 flex items-center justify-end gap-x-6">
                     <button
                         type="submit"
-                        className="rounded-md bg-indigo-600 px-8 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        disabled={!task.description || !task.title}
+                        className="rounded-md bg-indigo-600 px-8
+                         py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                        Save
+                       { loading ? <Spinner/>: "Save"}
+                        
                     </button>
                 </div>
             </div>
