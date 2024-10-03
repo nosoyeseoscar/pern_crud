@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Card({title, description, id, handleDelete}) {
+export default function Card({title, description, id, handleDelete, navigate}) {
   return (
     <div className="max-w p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-2 flex justify-between">
         <div>
@@ -13,7 +13,7 @@ export default function Card({title, description, id, handleDelete}) {
           <button 
             type="button"
             className="rounded bg-cyan-600 px-6 pb-2 pt-2.5"
-            onClick={()=>console.log("Editing Task")}
+            onClick={()=> navigate(`/tasks/${id}/edit`)}
           >
             Edit
           </button>

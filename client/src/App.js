@@ -9,8 +9,9 @@ export default function App() {
       <Navbar/>
       <div className='container mx-auto'>
         <Routes>
-          <Route path="/" element={<TaskList/>}/>
-          <Route path="/tasks/new" element={<TaskForm/>}/>
+          <Route path="/" element={<TaskList/>} />
+          <Route path="/tasks/new" element={<TaskForm/>} />
+          <Route path="/tasks/:id/edit" element={<TaskForm/>} />
           {/*TODO:falta editar*/}
         </Routes>
       </div>

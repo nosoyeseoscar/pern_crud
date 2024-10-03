@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "./Spinner";
 
 const URL = 'http://localhost:4000/tasks'
@@ -12,27 +12,48 @@ export default function TaskForm() {
     })
 
     const [loading, setLoading] = useState(false)
-
+    const [editing, setEditing] = useState(false)
+ 
     const navigate = useNavigate()
+    const params = useParams()
 
     const handleSubmit = async (event) => {
         event.preventDefault()
 
         setLoading(true)
 
-        try {
-            const res = await fetch(URL, {
-                method: "POST",
-                body: JSON.stringify(task),
-                headers: {'Content-Type':'application/json'}
-            })
-    
-            //const data = await res.json()
-            setLoading(false)
-            navigate('/')
-        } catch (error) {
-            console.log(error.message);
-        } 
+        if (editing) {
+            try {
+                await fetch(`${URL}/${params.id}`, {
+                    method: "PUT",
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify(task)
+                })
+        
+                //const data = await res.json()
+                setLoading(false)
+                setEditing(false)
+                navigate('/')
+            } catch (error) {
+                console.log(error.message);
+            } 
+        }
+        else {
+            try {
+                await fetch(URL, {
+                    method: "POST",
+                    body: JSON.stringify(task),
+                    headers: {'Content-Type':'application/json'}
+                })
+        
+                //const data = await res.json()
+                setLoading(false)
+                navigate('/')
+            } catch (error) {
+                console.log(error.message);
+            } 
+        }
+        
     }
 
     const handleChange = (event) => {
@@ -41,6 +62,23 @@ export default function TaskForm() {
         setTask({...task, [name]: value})
         
     }
+
+    const loadTask = async (id) => {
+        try {
+            const res = await fetch(`${URL}/${id}`)
+            const data = await res.json()
+            setTask({ title:data.title, description: data.description })
+            setEditing(true)
+        } catch (error) {
+            console.log(error.message)
+        }        
+    }
+
+    useEffect( ()=>{
+        if (params.id)
+            loadTask(params.id)
+        
+    },[params.id])
 
   return (
     <form onSubmit={handleSubmit}>
@@ -60,6 +98,7 @@ export default function TaskForm() {
                                 <input
                                     id="title"
                                     name="title"
+                                    value={task.title}
                                     type="text"
                                     placeholder="New Task"
                                     autoComplete="title"
@@ -77,9 +116,9 @@ export default function TaskForm() {
                             <textarea
                                 id="description"
                                 name="description"
+                                value={task.description}
                                 rows={4}
                                 className="block w-full rounded-md border-0 py-1.5 pl-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                defaultValue={''}
                                 onChange={handleChange}
                             />
                         </div>
